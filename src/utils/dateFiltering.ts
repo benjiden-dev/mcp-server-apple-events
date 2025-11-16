@@ -5,6 +5,7 @@
 
 import type { Reminder } from '../types/index.js';
 import { getTodayStart, getTomorrowStart, getWeekEnd } from './dateUtils.js';
+import { parseReminderDueDate } from './reminderDateParser.js';
 
 /**
  * Date range filters for reminders
@@ -52,7 +53,8 @@ function filterRemindersByDate(
   return reminders.filter((reminder) => {
     if (!reminder.dueDate) return false;
 
-    const dueDate = new Date(reminder.dueDate);
+    const dueDate = parseReminderDueDate(reminder.dueDate);
+    if (!dueDate) return false;
 
     switch (filter) {
       case 'overdue':
