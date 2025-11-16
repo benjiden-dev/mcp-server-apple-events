@@ -98,7 +98,8 @@ export const buildToolCall = (
 });
 
 /**
- * Format time string consistently (YYYY-MM-DD HH:mm:ss)
+ * Format time string consistently with explicit timezone offset (YYYY-MM-DD HH:mm:ss±HH:MM)
+ * This prevents timezone ambiguity when JavaScript runtime TZ differs from Swift system TZ
  */
 export const buildTimeFormat = (date: Date): string => {
   const year = date.getFullYear();
@@ -107,7 +108,19 @@ export const buildTimeFormat = (date: Date): string => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  // Get timezone offset in minutes and format as ±HH:MM
+  // Note: getTimezoneOffset() returns positive if local is behind UTC, so we negate it
+  const offsetMinutes = -date.getTimezoneOffset();
+  const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(
+    2,
+    '0',
+  );
+  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0');
+  const offsetString = `${offsetSign}${offsetHours}:${offsetMins}`;
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}${offsetString}`;
 };
 
 /**
@@ -260,9 +273,10 @@ export const DAILY_CAPACITY_CONSTRAINTS = [
 
 /**
  * Time format specification (single source of truth)
+ * Format includes explicit timezone offset to prevent ambiguity in containerized environments
  */
 export const TIME_FORMAT_SPEC =
-  'YYYY-MM-DD HH:mm:ss (local time, no timezone suffix like "Z" or "+08:00")';
+  'YYYY-MM-DD HH:mm:ss±HH:MM (with explicit timezone offset, e.g., "2025-11-17 14:00:00-05:00" for 2PM EST)';
 
 /**
  * Time block creation strict rules (includes trigger conditions from former DEEP_WORK_CONSTRAINTS)
