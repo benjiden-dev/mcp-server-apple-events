@@ -91,8 +91,8 @@ describe('Tool Handlers', () => {
           isCompleted: true,
           list: 'Work',
           notes: 'Important note',
-          dueDate: null,
-          url: null,
+          dueDate: undefined,
+          url: undefined,
         },
       ];
       mockReminderRepository.findReminders.mockResolvedValue(mockReminders);
@@ -402,6 +402,10 @@ describe('Tool Handlers', () => {
         {
           id: 'evt-1',
           title: 'Minimal Event',
+          calendar: 'Personal',
+          startDate: '2025-11-15T08:00:00Z',
+          endDate: '2025-11-15T09:00:00Z',
+          isAllDay: false,
         },
         {
           id: 'evt-2',

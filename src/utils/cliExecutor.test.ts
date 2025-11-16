@@ -72,46 +72,6 @@ describe('cliExecutor', () => {
       | ExecFileCallback
       | undefined;
 
-  // Helper to create mock implementations for common scenarios
-  const _createMockExecFile = (
-    scenario: 'success' | 'permission' | 'empty' | 'null',
-  ) => {
-    return ((
-      _cliPath: string,
-      _args: readonly string[] | null | undefined,
-      optionsOrCallback?: ExecFileOptions | null | ExecFileCallback,
-      callback?: ExecFileCallback,
-    ) => {
-      const cb = invokeCallback(optionsOrCallback, callback);
-
-      switch (scenario) {
-        case 'success':
-          cb?.(
-            null,
-            JSON.stringify({ status: 'success', result: { ok: true } }),
-            '',
-          );
-          break;
-        case 'permission':
-          cb?.(
-            Object.assign(new Error('Command failed'), {
-              stderr: '',
-            }) as ExecFileException,
-            JSON.stringify({ status: 'error', message: 'Permission denied.' }),
-            '',
-          );
-          break;
-        case 'empty':
-          cb?.(null, '', '');
-          break;
-        case 'null':
-          cb?.(null, null as unknown as string, '');
-          break;
-      }
-      return {} as ChildProcess;
-    }) as unknown as typeof execFile;
-  };
-
   describe('executeCli', () => {
     it('returns parsed result on success', async () => {
       const mockStdout = JSON.stringify({
@@ -612,7 +572,7 @@ describe('cliExecutor', () => {
         callback?: ExecFileCallback,
       ) => {
         const cb = invokeCallback(optionsOrCallback, callback);
-        cb?.(new Error('Failed'), null, '');
+        cb?.(new Error('Failed'), '', '');
         return {} as ChildProcess;
       }) as unknown as typeof execFile);
 
@@ -623,7 +583,6 @@ describe('cliExecutor', () => {
 
     it('should handle non-string, non-Buffer, non-null data in bufferToString', async () => {
       // Test the String(data) branch by passing a number
-      const _numberData = 123;
       const validJsonString = '{"status":"success","result":{"value":123}}';
 
       mockExecFile.mockImplementation(((

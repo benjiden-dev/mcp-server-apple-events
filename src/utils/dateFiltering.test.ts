@@ -296,7 +296,9 @@ describe('DateFiltering', () => {
       ];
 
       // Testing unknown filter value - using type assertion to bypass type checking
-      const filters = { dueWithin: 'unknown-filter' as any } as ReminderFilters;
+      const filters = {
+        dueWithin: 'unknown-filter' as unknown,
+      } as ReminderFilters;
       const result = applyReminderFilters(allReminders, filters);
 
       // Should return all reminders with due dates (default branch behavior)

@@ -5,7 +5,8 @@
 
 const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const DATE_ONLY_WITH_TZ_REGEX = /^(\d{4}-\d{2}-\d{2})(Z|[+-]\d{2}:?\d{2})$/i;
-const DATE_TIME_NO_TZ_REGEX = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?$/;
+const DATE_TIME_NO_TZ_REGEX =
+  /^(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?$/;
 const TIMEZONE_SUFFIX_REGEX = /(Z|[+-]\d{2}(?::?\d{2})?)$/i;
 
 const toNumber = (value: string): number => Number.parseInt(value, 10);
@@ -36,7 +37,9 @@ const normalizeTimezoneSegment = (segment: string): string => {
   if (clean.length === 5) {
     return `${clean.slice(0, 3)}:${clean.slice(3)}`;
   }
-  return segment.includes(':') ? segment : `${segment.slice(0, 3)}:${segment.slice(3)}`;
+  return segment.includes(':')
+    ? segment
+    : `${segment.slice(0, 3)}:${segment.slice(3)}`;
 };
 
 const normalizeIsoString = (value: string): string => {
@@ -45,9 +48,8 @@ const normalizeIsoString = (value: string): string => {
     normalized = `${normalized.slice(0, 10)}T${normalized.slice(11)}`;
   }
 
-  normalized = normalized.replace(
-    TIMEZONE_SUFFIX_REGEX,
-    (match) => normalizeTimezoneSegment(match),
+  normalized = normalized.replace(TIMEZONE_SUFFIX_REGEX, (match) =>
+    normalizeTimezoneSegment(match),
   );
 
   return normalized;
@@ -77,7 +79,9 @@ export const parseReminderDueDate = (
   const dateWithTzMatch = trimmed.match(DATE_ONLY_WITH_TZ_REGEX);
   if (dateWithTzMatch) {
     const [, datePart, tzSegment] = dateWithTzMatch;
-    return parseWithNative(`${datePart}T00:00:00${normalizeTimezoneSegment(tzSegment)}`);
+    return parseWithNative(
+      `${datePart}T00:00:00${normalizeTimezoneSegment(tzSegment)}`,
+    );
   }
 
   const localDateTimeMatch = trimmed.match(DATE_TIME_NO_TZ_REGEX);

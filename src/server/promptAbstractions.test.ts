@@ -348,6 +348,7 @@ describe('Confidence Action Formatting', () => {
         action: 'create',
         title: 'Test Task',
       }),
+      rationale: '',
     });
 
     const formatted = formatConfidenceAction(action);
