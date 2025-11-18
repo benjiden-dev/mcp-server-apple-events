@@ -1,6 +1,7 @@
 /**
- * server/handlers.ts
- * Request handlers for the MCP server
+ * @fileoverview MCP server request handlers
+ * @module server/handlers
+ * @description Registers and handles MCP protocol requests for tools, prompts, and resources
  */
 
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -23,8 +24,17 @@ import {
 } from './prompts.js';
 
 /**
- * Registers all request handlers for the MCP server
- * @param server - The MCP server instance
+ * Registers all MCP protocol request handlers on the server instance
+ * @param {Server} server - The MCP server instance to register handlers on
+ * @returns {void}
+ * @description Sets up handlers for:
+ * - ListTools: Returns available tool definitions
+ * - CallTool: Executes tool operations (reminders, lists, calendar events)
+ * - ListPrompts: Returns available prompt templates
+ * - GetPrompt: Generates specific prompt content
+ * @example
+ * const server = new Server(...);
+ * registerHandlers(server);
  */
 export function registerHandlers(server: Server): void {
   // Handler for listing available tools

@@ -52,6 +52,19 @@ interface StructuredPromptConfig {
   calibration?: string[];
 }
 
+/**
+ * Creates a structured prompt template with consistent formatting
+ * @param {StructuredPromptConfig} config - Configuration for prompt structure
+ * @param {string} config.mission - The core mission statement
+ * @param {string[]} config.contextInputs - Context inputs for the prompt
+ * @param {string[]} config.process - Step-by-step process instructions
+ * @param {string[]} config.outputFormat - Expected output format guidelines
+ * @param {string[]} config.qualityBar - Quality criteria and standards
+ * @param {string[]} [config.constraints] - Optional constraints and limitations
+ * @param {string[]} [config.calibration] - Optional calibration guidelines
+ * @returns {string} Formatted prompt string with all sections
+ * @private
+ */
 const createStructuredPrompt = ({
   mission,
   contextInputs,
@@ -84,9 +97,21 @@ const createStructuredPrompt = ({
   return sections.join('\n');
 };
 
+/**
+ * Type guard to check if a value is a non-empty string
+ * @param {unknown} value - Value to check
+ * @returns {boolean} True if value is a non-empty string
+ * @private
+ */
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === 'string' && value.trim().length > 0;
 
+/**
+ * Parses optional string values, filtering out empty strings
+ * @param {unknown} value - Value to parse
+ * @returns {string | undefined} Trimmed string if non-empty, undefined otherwise
+ * @private
+ */
 const parseOptionalString = (value: unknown): string | undefined =>
   isNonEmptyString(value) ? value : undefined;
 
@@ -97,9 +122,9 @@ const parseOptionalString = (value: unknown): string | undefined =>
  * reminders, identifies gaps, and proactively creates or optimizes reminders
  * with appropriate time-based properties.
  *
- * @param args - Organization arguments
- * @param args.today_focus - Optional focus area (e.g., "urgency-based", "gap filling")
- * @returns Structured prompt response with executable action queue
+ * @param {DailyTaskOrganizerArgs} args - Organization arguments
+ * @param {string} [args.today_focus] - Optional focus area (e.g., "urgency-based", "gap filling")
+ * @returns {PromptResponse} Structured prompt response with executable action queue
  *
  * @example
  * ```typescript

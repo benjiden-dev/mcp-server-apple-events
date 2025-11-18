@@ -1,6 +1,8 @@
 /**
- * tools/definitions.ts
- * MCP tool definitions for Apple Reminders server, adhering to standard JSON Schema.
+ * @fileoverview MCP tool definitions for Apple Reminders server
+ * @module tools/definitions
+ * @description Standard JSON Schema definitions for MCP tools including reminders, lists, and calendar events
+ * Uses extended JSON Schema with dependentSchemas for conditional validation
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
@@ -14,6 +16,8 @@ import {
 /**
  * Extended JSON Schema with dependentSchemas support
  * This extends the base schema type to include the JSON Schema Draft 2019-09 dependentSchemas keyword
+ * for conditional validation based on action types
+ * @interface
  */
 interface ExtendedJSONSchema {
   type?: string;
@@ -28,6 +32,8 @@ interface ExtendedJSONSchema {
 
 /**
  * Extended Tool type that supports dependentSchemas in inputSchema
+ * Allows conditional schema validation based on action field values
+ * @interface
  */
 interface ExtendedTool {
   name: string;
@@ -265,5 +271,8 @@ const _EXTENDED_TOOLS: ExtendedTool[] = [
 /**
  * Export TOOLS as Tool[] for MCP server compatibility
  * The dependentSchemas are preserved at runtime even though TypeScript doesn't type-check them
+ * @constant {Tool[]}
+ * @description Contains all tool definitions for reminders, lists, and calendar operations
+ * with conditional validation schemas based on action types
  */
 export const TOOLS = _EXTENDED_TOOLS as unknown as Tool[];

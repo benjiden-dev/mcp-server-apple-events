@@ -1,6 +1,8 @@
 /**
- * validation/schemas.ts
- * Comprehensive input validation schemas using Zod for security
+ * @fileoverview Comprehensive input validation schemas using Zod for security
+ * @module validation/schemas
+ * @description Security-focused validation with safe text patterns, URL validation,
+ * and length limits to prevent injection attacks and malformed data
  */
 
 import { z } from 'zod/v3';
@@ -24,7 +26,15 @@ const URL_PATTERN =
 // Maximum lengths for security (imported from constants.ts)
 
 /**
- * Schema factory functions for DRY principle and consistent validation
+ * Schema factory for required safe text validation
+ * @param {number} minLength - Minimum character length
+ * @param {number} maxLength - Maximum character length
+ * @param {string} [fieldName='Text'] - Field name for error messages
+ * @returns {ZodString} Validated string schema with security patterns
+ * @description
+ * - Blocks control characters and dangerous Unicode
+ * - Allows printable ASCII, extended Latin, CJK characters
+ * - Enforces length limits for security
  */
 const createSafeTextSchema = (
   minLength: number,
@@ -40,6 +50,13 @@ const createSafeTextSchema = (
       `${fieldName} contains invalid characters. Only alphanumeric, spaces, and basic punctuation allowed`,
     );
 
+/**
+ * Schema factory for optional safe text validation
+ * @param {number} maxLength - Maximum character length
+ * @param {string} [fieldName='Text'] - Field name for error messages
+ * @returns {ZodOptional<ZodString>} Optional validated string schema
+ * @description Same security patterns as createSafeTextSchema but allows undefined values
+ */
 const createOptionalSafeTextSchema = (maxLength: number, fieldName = 'Text') =>
   z
     .string()
@@ -257,7 +274,17 @@ export const DeleteReminderListSchema = z.object({
 });
 
 /**
- * Validation error wrapper for consistent error handling
+ * Validation error wrapper for consistent error handling across the application
+ * @extends Error
+ * @class
+ * @description Provides structured error information with field-level details for validation failures
+ * @param {string} message - Human-readable error message
+ * @param {Record<string, string[]>} [details] - Optional field-specific error details
+ * @example
+ * throw new ValidationError('Invalid input', {
+ *   title: ['Title is required', 'Title too long'],
+ *   dueDate: ['Invalid date format']
+ * });
  */
 export class ValidationError extends Error {
   constructor(
@@ -270,7 +297,26 @@ export class ValidationError extends Error {
 }
 
 /**
- * Generic validation function with security error handling and logging
+ * Generic validation function with security error handling and detailed logging
+ * @template T - Expected type after validation
+ * @param {z.ZodSchema<T>} schema - Zod schema to validate against
+ * @param {unknown} input - Input data to validate
+ * @returns {T} Validated and parsed data
+ * @throws {ValidationError} Detailed validation error with field-specific messages
+ * @description
+ * - Provides detailed field-level error messages
+ * - Aggregates multiple validation errors into single error
+ * - Includes path information for nested field validation
+ * - Throws ValidationError for consistent error handling
+ * @example
+ * try {
+ *   const data = validateInput(CreateReminderSchema, input);
+ *   // data is now typed as CreateReminderData
+ * } catch (error) {
+ *   if (error instanceof ValidationError) {
+ *     console.log(error.details); // Field-specific error messages
+ *   }
+ * }
  */
 export const validateInput = <T>(schema: z.ZodSchema<T>, input: unknown): T => {
   try {

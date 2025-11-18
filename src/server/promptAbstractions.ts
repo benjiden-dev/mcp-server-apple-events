@@ -1,6 +1,8 @@
 /**
- * server/promptAbstractions.ts
- * Shared abstractions for prompt templates - confidence levels, tool execution patterns, output formats
+ * @fileoverview Shared abstractions for prompt templates
+ * @module server/promptAbstractions
+ * @description Confidence levels, tool execution patterns, output formats shared across all prompt templates
+ * Provides consistent behavior for action execution based on confidence thresholds
  */
 
 /**
@@ -15,7 +17,13 @@ export const CONFIDENCE_THRESHOLDS = {
 export type ConfidenceLevel = 'HIGH' | 'MEDIUM' | 'LOW';
 
 /**
- * Determine confidence level from percentage
+ * Determines confidence level from percentage score
+ * @param {number} percentage - Confidence percentage (0-100)
+ * @returns {ConfidenceLevel} 'HIGH' (>80%), 'MEDIUM' (60-80%), or 'LOW' (<60%)
+ * @example
+ * getConfidenceLevel(85) // 'HIGH'
+ * getConfidenceLevel(70) // 'MEDIUM'
+ * getConfidenceLevel(30) // 'LOW'
  */
 export const getConfidenceLevel = (percentage: number): ConfidenceLevel => {
   if (percentage > CONFIDENCE_THRESHOLDS.HIGH) return 'HIGH';

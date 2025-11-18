@@ -1,6 +1,8 @@
 /**
- * utils/cliExecutor.ts
- * Executes the EventKitCLI binary and parses the JSON output.
+ * @fileoverview Swift CLI execution and JSON response parsing
+ * @module utils/cliExecutor
+ * @description Executes the EventKitCLI binary for native macOS EventKit operations
+ * Handles permission errors with automatic retry mechanism and AppleScript prompts
  */
 
 import type { ExecFileException } from 'node:child_process';
@@ -152,10 +154,18 @@ const runCli = async <T>(cliPath: string, args: string[]): Promise<T> => {
 };
 
 /**
- * Executes the EventKitCLI binary with the given arguments.
- * @param args - An array of arguments to pass to the CLI.
- * @returns The parsed JSON result from the CLI.
- * @throws An error if the CLI execution fails or returns an error status.
+ * Executes the EventKitCLI binary with automatic permission handling and retry logic
+ * @template T - Expected return type from the Swift CLI
+ * @param {string[]} args - Array of arguments to pass to the CLI
+ * @returns {Promise<T>} Parsed JSON result from the CLI
+ * @throws {Error} If binary not found, validation fails, or CLI execution fails after retry
+ * @description
+ * - Locates binary using secure path validation
+ * - Automatically handles permission errors with AppleScript prompts
+ * - Retries once after permission grant
+ * - Parses JSON response from Swift CLI
+ * @example
+ * const result = await executeCli<Reminder[]>(['--action', 'read', '--showCompleted', 'true']);
  */
 export async function executeCli<T>(args: string[]): Promise<T> {
   const projectRoot = findProjectRoot();

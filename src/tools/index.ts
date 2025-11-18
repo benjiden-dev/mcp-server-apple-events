@@ -1,6 +1,8 @@
 /**
- * tools/index.ts
- * Exports tool definitions and handler functions
+ * @fileoverview Main tool definitions and handler functions
+ * @module tools/index
+ * @description Routes MCP tool calls to appropriate handlers for reminders, lists, and calendar operations
+ * Provides centralized tool call handling with consistent error management
  */
 
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
@@ -30,9 +32,16 @@ import {
 
 /**
  * Routes tool calls to the appropriate handler based on the tool name
- * @param name - Name of the tool to call
- * @param args - Arguments for the tool
- * @returns Result of the tool call
+ * @param {string} name - Name of the tool to call (e.g., 'reminders_tasks', 'calendar_events')
+ * @param {ToolArgs} args - Arguments for the tool call
+ * @returns {Promise<CallToolResult>} Result of the tool call with formatted output
+ * @throws {Error} If tool name is unknown or handler execution fails
+ * @description
+ * Supports both canonical names ('reminders_tasks') and dot notation ('reminders.tasks')
+ * Routes to specific handlers for reminders, lists, and calendar operations
+ * @example
+ * await handleToolCall('reminders_tasks', { action: 'create', title: 'New task' });
+ * await handleToolCall('calendar.events', { action: 'read', search: 'meeting' });
  */
 const TOOL_ALIASES: Record<string, string> = {
   'reminders.tasks': 'reminders_tasks',
@@ -70,7 +79,7 @@ const createActionRouter = <TArgs extends { action: string }>(
     }
 
     const typedArgs = args as TArgs;
-    const handler = handlerMap[typedArgs.action];
+    const handler = handlerMap[typedArgs.action as TArgs['action']];
 
     if (!handler) {
       return createErrorResponse(

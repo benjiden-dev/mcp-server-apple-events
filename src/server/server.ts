@@ -1,6 +1,8 @@
 /**
- * server/server.ts
- * Server configuration and startup logic
+ * @fileoverview MCP server configuration and startup logic
+ * @module server/server
+ * @description Creates and manages the Model Context Protocol server instance
+ * with stdio transport for Apple Reminders integration
  */
 
 import 'exit-on-epipe';
@@ -10,9 +12,14 @@ import type { ServerConfig } from '../types/index.js';
 import { registerHandlers } from './handlers.js';
 
 /**
- * Creates and configures an MCP server instance
- * @param config - Server configuration
- * @returns Configured server instance
+ * Creates and configures an MCP server instance with Apple Reminders capabilities
+ * @param {ServerConfig} config - Server configuration including name and version
+ * @returns {Server} Configured MCP server instance with registered handlers
+ * @example
+ * const server = createServer({
+ *   name: 'apple-reminders-mcp',
+ *   version: '1.0.0'
+ * });
  */
 export function createServer(config: ServerConfig): Server {
   const server = new Server(
@@ -36,9 +43,15 @@ export function createServer(config: ServerConfig): Server {
 }
 
 /**
- * Starts the MCP server
- * @param config - Server configuration
- * @returns A promise that resolves when the server starts
+ * Starts the MCP server with stdio transport and graceful shutdown handling
+ * @param {ServerConfig} config - Server configuration including name and version
+ * @returns {Promise<void>} Promise that resolves when server is successfully started
+ * @throws {Error} Exits with code 1 if server startup fails
+ * @example
+ * await startServer({
+ *   name: 'apple-reminders-mcp',
+ *   version: '1.0.0'
+ * });
  */
 export async function startServer(config: ServerConfig): Promise<void> {
   try {
