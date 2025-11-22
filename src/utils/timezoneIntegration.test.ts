@@ -8,9 +8,9 @@
  */
 
 import type { CalendarEvent, Reminder } from '../types/index.js';
+import { calendarRepository } from './calendarRepository.js';
 import { executeCli } from './cliExecutor.js';
 import { reminderRepository } from './reminderRepository.js';
-import { calendarRepository } from './calendarRepository.js';
 
 // Mock CLI executor
 jest.mock('./cliExecutor.js');
@@ -31,13 +31,15 @@ describe('Timezone Data Passthrough Tests', () => {
         '2025-11-15', // Date only
       ];
 
-      const mockReminders: Partial<Reminder>[] = testCases.map((date, index) => ({
-        id: `rem-${index}`,
-        title: `Reminder ${index}`,
-        isCompleted: false,
-        list: 'Default',
-        dueDate: date,
-      }));
+      const mockReminders: Partial<Reminder>[] = testCases.map(
+        (date, index) => ({
+          id: `rem-${index}`,
+          title: `Reminder ${index}`,
+          isCompleted: false,
+          list: 'Default',
+          dueDate: date,
+        }),
+      );
 
       mockExecuteCli.mockResolvedValue({
         reminders: mockReminders,
