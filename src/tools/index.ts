@@ -120,8 +120,10 @@ const TOOL_ROUTER_MAP = {
       delete: (calendarArgs) => handleDeleteCalendarEvent(calendarArgs),
     },
   ),
-  [TOOL_NAMES.CALENDAR_CALENDARS]: async (args?: ToolArgs) =>
-    handleReadCalendars(args),
+  [TOOL_NAMES.CALENDAR_CALENDARS]: async (args?: ToolArgs) => {
+    // Type narrowing: calendar_calendars only accepts CalendarsToolArgs
+    return handleReadCalendars(args as CalendarsToolArgs | undefined);
+  },
 } satisfies Record<ToolName, ToolRouter>;
 
 const isManagedToolName = (value: string): value is ToolName =>
