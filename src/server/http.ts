@@ -1,5 +1,5 @@
-import express from 'express';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import express from 'express';
 import type { ServerConfig } from '../types/index.js';
 import { createServer } from './server.js';
 
@@ -15,7 +15,7 @@ export async function startHttpServer(config: ServerConfig): Promise<void> {
   // The SDK handles the connection lifecycle
   let transport: SSEServerTransport;
 
-  app.get('/sse', async (req, res) => {
+  app.get('/sse', async (_req, res) => {
     transport = new SSEServerTransport('/message', res);
     await server.connect(transport);
   });
