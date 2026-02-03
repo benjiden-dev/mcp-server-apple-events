@@ -571,3 +571,26 @@ The CLI entry point includes a project-root fallback, so you can start the serve
 **Build Tools:**
 - Swift binaries for native macOS integration
 - TypeScript compilation for cross-platform compatibility
+
+## HTTP Server Support
+
+This server can also run in HTTP mode using Server-Sent Events (SSE), which is useful for connecting to MCP clients that support HTTP transport.
+
+### Starting the HTTP Server
+
+
+
+```bash
+pnpm start:http
+```
+
+The server will start on port 3000 (or the port specified in the `PORT` environment variable).
+
+### Endpoints
+
+- **GET /sse**: Establishes the Server-Sent Events connection.
+- **POST /message**: Endpoint for sending JSON-RPC messages to the server.
+
+## Security
+
+A comprehensive security audit has been performed on this repository. See [SECURITY_AUDIT.md](SECURITY_AUDIT.md) for details.
